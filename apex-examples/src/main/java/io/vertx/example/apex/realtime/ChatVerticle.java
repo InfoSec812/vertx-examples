@@ -9,10 +9,9 @@ import io.vertx.ext.apex.handler.StaticHandler;
 import io.vertx.ext.apex.handler.sockjs.BridgeOptions;
 import io.vertx.ext.apex.handler.sockjs.PermittedOptions;
 import io.vertx.ext.apex.handler.sockjs.SockJSHandler;
-import static java.text.DateFormat.MEDIUM;
-import static java.text.DateFormat.SHORT;
-import static java.text.DateFormat.getDateTimeInstance;
-import static java.time.Instant.now;
+
+import java.text.DateFormat;
+import java.time.Instant;
 import java.util.Date;
 
 /**
@@ -35,7 +34,8 @@ public class ChatVerticle extends AbstractVerticle {
         // Register a listener on the {@link EventBus} to recieve messages from the client.
         eb.consumer("chat.to.server").handler(message -> {
             // When a message is recieved, prepend a timestamp and send the message back to all clients.
-            String timestamp = getDateTimeInstance(SHORT, MEDIUM).format(Date.from(now()));
+            Date now = Date.from(Instant.now());
+            String timestamp = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM).format(now);
             eb.publish("chat.to.client", timestamp+": "+message.body());
         });
         
